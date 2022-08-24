@@ -1,0 +1,9 @@
+aiohttp
+requests
+pycryptodome
+opencv-python
+opencv-contrib-python
+opencv-python-headless
+opencv-contrib-python-headless
+numpy==1.21.5
+googletrans
