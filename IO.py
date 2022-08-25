@@ -10,7 +10,7 @@ from requests import get
 import json
 logging.basicConfig(level=logging.ERROR)
 
-admins  = "CipherX"
+admins  = "dTnAxRzLpYdCNvxRQmLJsOexYwEknUv"
 Channel = "Yes_GNG"
 status  = []
 mute    = []
@@ -119,55 +119,143 @@ async def main():
                     if event.raw_text == OyA[1] and event.object_guid in OyA[0]:
                         if event.type == "Group":
                             await event.reply(OyA[2])
-
+                if event.raw_text == 'لقب':
+                    try:
+                        us = await client(methods.messages.GetMessagesByID(event.object_guid,message_ids=event.message.reply_to_message_id))
+                        username_lghab = mycursor.execute(f'SELECT matn FROM Lghab WHERE object_target = "{us.messages[0].author_object_guid}"').fetchone()
+                        if username_lghab == None:
+                            await event.reply('• کاربر لقبی ندارد •\n\n🔥 برای افزودن لقب از دستور ( تنظیم لقب تست ) استفاده کنید و جای ( تست ) لقب رو وارد کنید 🔥')
+                        else:
+                            await event.reply(f'• لقب کاربر ~ {username_lghab[0]} •')
+                    except:
+                        pass
                 if event.raw_text.startswith("تنظیم لقب") and event.type == "Group":
                     try:
                         command = event.raw_text.replace("تنظیم لقب","").strip()
                         us = await client(methods.messages.GetMessagesByID(event.object_guid,message_ids=event.message.reply_to_message_id))
-                        mycursor.execute('INSERT INTO Lghab (object_guid, object_target, matn) VALUES (?, ?, ?)', (event.object_guid, us.messages[0].author_object_guid, command))
-                        db.commit()
-                        await event.reply(f'لقب افزوده شد 🔥\nلقب : {command}')
+                        lghab_old = mycursor.execute('SELECT object_target FROM Lghab WHERE object_target = "%s"' %us.messages[0].author_object_guid).fetchone()
+                        if lghab_old == None:
+                            mycursor.execute('INSERT INTO Lghab (object_guid, object_target, matn) VALUES (?, ?, ?)', (event.object_guid, us.messages[0].author_object_guid, command))
+                            db.commit()
+                            await event.reply(f'🔥 لقب جدید افزوده شد \n• لقب ~ {command} •')
+                        else:
+                            mycursor.execute(f'UPDATE Lghab SET matn = "{command}" WHERE object_target = "{us.messages[0].author_object_guid}"')
+                            await event.reply(f'🔥 لقب اپدیت شد \n• لقب جدید ~ {command} •')
                     except:
                         pass
                 data_Lhgab = db.execute('SELECT * FROM Lghab').fetchall()
                 for LgA in data_Lhgab:
-                    if event.raw_text.startswith("بای") and event.message.author_object_guid in LgA[1]:
+                    if event.raw_text == ("بای") and event.message.author_object_guid in LgA[1]:
                         if event.type == "Group" and event.object_guid in LgA[0]:
                             await event.reply(f"بای {LgA[2]}")
-                    if event.raw_text.startswith("خدافط") and event.message.author_object_guid in LgA[1]:
+                    if event.raw_text == ("خدافط") and event.message.author_object_guid in LgA[1]:
                         if event.type == "Group" and event.object_guid in LgA[0]:
                             await event.reply(f"خدافظ {LgA[2]}")
-                    if event.raw_text.startswith("سلام") and event.message.author_object_guid in LgA[1]:
+                    if event.raw_text == ("سلام") and event.message.author_object_guid in LgA[1]:
                         if event.type == "Group" and event.object_guid in LgA[0]:
                             await event.reply(f"سلام {LgA[2]}")
-                    if event.raw_text.startswith("من اومدم") and event.message.author_object_guid in LgA[1]:
+                    if event.raw_text == ("من اومدم") and event.message.author_object_guid in LgA[1]:
                         if event.type == "Group" and event.object_guid in LgA[0]:
                             await event.reply(f"خوش اومدی {LgA[2]}")
-                    if event.raw_text.startswith("خوبی") and event.message.author_object_guid in LgA[1]:
+                    if event.raw_text == ("خوبی") and event.message.author_object_guid in LgA[1]:
                         if event.type == "Group" and event.object_guid in LgA[0]:
                             await event.reply(f"ت خوبی {LgA[2]}")
-                    if event.raw_text.startswith("چخبر") and event.message.author_object_guid in LgA[1]:
+                    if event.raw_text == ("چخبر") and event.message.author_object_guid in LgA[1]:
                         if event.type == "Group" and event.object_guid in LgA[0]:
                             await event.reply(f"سلامتیت {LgA[2]}")
-                    if event.raw_text.startswith("سلامتی") and event.message.author_object_guid in LgA[1]:
+                    if event.raw_text == ("سلامتی") and event.message.author_object_guid in LgA[1]:
                         if event.type == "Group" and event.object_guid in LgA[0]:
                             await event.reply(f"سلامت باشی {LgA[2]}")
-                    if event.raw_text.startswith("چطوری") and event.message.author_object_guid in LgA[1]:
+                    if event.raw_text == ("چطوری") and event.message.author_object_guid in LgA[1]:
                         if event.type == "Group" and event.object_guid in LgA[0]:
                             await event.reply(f"خوبم ت خوبی {LgA[2]}")
-                    if event.raw_text.startswith("حصلم سرفته") and event.message.author_object_guid in LgA[1]:
+                    if event.raw_tex == ("حصلم سرفته") and event.message.author_object_guid in LgA[1]:
                         if event.type == "Group" and event.object_guid in LgA[0]:
-                            await event.reply(f"چرا  {LgA[2]}")
-                    if event.raw_text.startswith("حسلم سرفته") and event.message.author_object_guid in LgA[1]:
+                            await event.reply(f"چرا {LgA[2]}")
+                    if event.raw_text == ("حسلم سرفته") and event.message.author_object_guid in LgA[1]:
                         if event.type == "Group" and event.object_guid in LgA[0]:
-                            await event.reply(f"چرا  {LgA[2]}")
-                    if event.raw_text.startswith("هعی") and event.message.author_object_guid in LgA[1]:
+                            await event.reply(f"چرا {LgA[2]}")
+                    if event.raw_text == ("هعی") and event.message.author_object_guid in LgA[1]:
                         if event.type == "Group" and event.object_guid in LgA[0]:
-                            await event.reply(f"نکش  {LgA[2]}")
-                    if event.raw_text.startswith("من برم") and event.message.author_object_guid in LgA[1]:
+                            await event.reply(f"نکش {LgA[2]}")
+                    if event.raw_text == ("من برم") and event.message.author_object_guid in LgA[1]:
                         if event.type == "Group" and event.object_guid in LgA[0]:
-                            await event.reply(f"برو بسلامت  {LgA[2]}")
-
+                            await event.reply(f"برو بسلامت {LgA[2]}")
+                    if event.raw_text == ("رل میخوام") and event.message.author_object_guid in LgA[1]:
+                        if event.type == "Group" and event.object_guid in LgA[0]:
+                            await event.reply(f"بیا خودم رلت میشم :) {LgA[2]}")
+                    if event.raw_text == ("کیر") and event.message.author_object_guid in LgA[1]:
+                        if event.type == "Group" and event.object_guid in LgA[0]:
+                            await event.reply(f"بی ادب نشو {LgA[2]}")
+                    if event.raw_text == ("خر") and event.message.author_object_guid in LgA[1]:
+                        if event.type == "Group" and event.object_guid in LgA[0]:
+                            await event.reply(f"گاو {LgA[2]}")
+                    if event.raw_text == ("بی ادب") and event.message.author_object_guid in LgA[1]:
+                        if event.type == "Group" and event.object_guid in LgA[0]:
+                            await event.reply(f"عه تو ک از همه بیشتر بی ادب تری{LgA[2]}")
+                    if event.raw_text == ("کسکش خر") and event.message.author_object_guid in LgA[1]:
+                        if event.type == "Group" and event.object_guid in LgA[0]:
+                            await event.reply(f"خودتی {LgA[2]}")
+                    if event.raw_text == ("بمیر") and event.message.author_object_guid in LgA[1]:
+                        if event.type == "Group" and event.object_guid in LgA[0]:
+                            await event.reply(f"خودت بمیر مرتیکه {LgA[2]}")
+                    if event.raw_text == ("خفه شو") and event.message.author_object_guid in LgA[1]:
+                        if event.type == "Group" and event.object_guid in LgA[0]:
+                            await event.reply(f"لال شو {LgA[2]}")
+                    if event.raw_text == ("رل") and event.message.author_object_guid in LgA[1]:
+                        if event.type == "Group" and event.object_guid in LgA[0]:
+                            await event.reply(f"رل میخوای ؟ {LgA[2]}")
+                    if event.raw_text == ("لفت میدم") and event.message.author_object_guid in LgA[1]:
+                        if event.type == "Group" and event.object_guid in LgA[0]:
+                            await event.reply(f"بکیرم {LgA[2]}")
+                    if event.raw_text == ("لف میدم") and event.message.author_object_guid in LgA[1]:
+                        if event.type == "Group" and event.object_guid in LgA[0]:
+                            await event.reply(f"بکیرم ک لف میدی :/ {LgA[2]}")
+                    if event.raw_text == ("لف") and event.message.author_object_guid in LgA[1]:
+                        if event.type == "Group" and event.object_guid in LgA[0]:
+                            await event.reply(f"ب کیفم {LgA[2]}")
+                    if event.raw_text == ("رل پی") and event.message.author_object_guid in LgA[1]:
+                        if event.type == "Group" and event.object_guid in LgA[0]:
+                            await event.reply(f"اگه میشد میومدم {LgA[2]}")
+                    if event.raw_text == ("رل پیوی") and event.message.author_object_guid in LgA[1]:
+                        if event.type == "Group" and event.object_guid in LgA[0]:
+                            await event.reply(f"ت بیا {LgA[2]}")
+                    if event.raw_text == ("بمیرم") and event.message.author_object_guid in LgA[1]:
+                        if event.type == "Group" and event.object_guid in LgA[0]:
+                            await event.reply(f"نمیر حیفی {LgA[2]}")
+                    if event.raw_text == ("های") and event.message.author_object_guid in LgA[1]:
+                        if event.type == "Group" and event.object_guid in LgA[0]:
+                            await event.reply(f"هایو کیف اسب {LgA[2]}")
+                    if event.raw_text == ("پی") and event.message.author_object_guid in LgA[1]:
+                        if event.type == "Group" and event.object_guid in LgA[0]:
+                            await event.reply(f"بیام پیت ؟ {LgA[2]}")
+                    if event.raw_text == ("بیا پی") and event.message.author_object_guid in LgA[1]:
+                        if event.type == "Group" and event.object_guid in LgA[0]:
+                            await event.reply(f"ع دروق ک نمیگی ؟ {LgA[2]}")
+                    if event.raw_text == ("خدا") and event.message.author_object_guid in LgA[1]:
+                        if event.type == "Group" and event.object_guid in LgA[0]:
+                            await event.reply(f"بگو بنده حقیر من {LgA[2]}")
+                    if event.raw_text == ("ناموسن") and event.message.author_object_guid in LgA[1]:
+                        if event.type == "Group" and event.object_guid in LgA[0]:
+                            await event.reply(f"ن {LgA[2]}")
+                    if event.raw_text == ("ناموصن") and event.message.author_object_guid in LgA[1]:
+                        if event.type == "Group" and event.object_guid in LgA[0]:
+                            await event.reply(f"ن بمولا{LgA[2]}")
+                    if event.raw_text == ("گونخور") and event.message.author_object_guid in LgA[1]:
+                        if event.type == "Group" and event.object_guid in LgA[0]:
+                            await event.reply(f"ت بخور {LgA[2]}")
+                    if event.raw_text == ("لاشی") and event.message.author_object_guid in LgA[1]:
+                        if event.type == "Group" and event.object_guid in LgA[0]:
+                            await event.reply(f"لاشه ؟ {LgA[2]}")
+                    if event.raw_text == ("اها") and event.message.author_object_guid in LgA[1]:
+                        if event.type == "Group" and event.object_guid in LgA[0]:
+                            await event.reply(f"اره {LgA[2]}")
+                    if event.raw_text == ("فاک") and event.message.author_object_guid in LgA[1]:
+                        if event.type == "Group" and event.object_guid in LgA[0]:
+                            await event.reply(f"توت {LgA[2]}")
+                    if event.raw_text == ("Fuck") and event.message.author_object_guid in LgA[1]:
+                        if event.type == "Group" and event.object_guid in LgA[0]:
+                            await event.reply(f"بی ادب نشو {LgA[2]}")
 
                 if event.raw_text.startswith("حذف لقب") and event.type == "Group":
                     try:
@@ -225,16 +313,25 @@ async def main():
 
 
 
+دیدن لقب 🔥
+
+• روی فرد مورد نظر ریپلی کنید و مانند دستور زیر عمل کنید •
+
+
+لقب •
+
+
+
 افزودن متن به ربات 🔥
 
 • مانند دستور زیر عمل کنید •
 
-• /answer CIPHER-X:Salam CiperX
+• /answer سلام:Salam
 
 
-جای CIPHER-X متنی که میخواهید کاربر میخواهد بگد
+جای (سلام) متنی که میخواهید کاربر بگد و ربات جواب دهد را بگذارید
 
-و جای Salam CipherX جواب خود را بنویسید
+و جای Salam جواب خود را بنویسید
 
 
 
@@ -242,9 +339,9 @@ async def main():
 
 • مانند دستور زیر عمل کنید •
 
-• /delanswer CIPHER-X
+• /delanswer سلام
 
-جای CIPHER-X متنی که میخواهید پاک شود رو بزارید
+جای (سلام) متنی که میخواهید پاک شود رو بزارید
 
 متنی که قبلا اضافه کردید
 
@@ -281,11 +378,11 @@ async def main():
                             await client(methods.groups.SetGroupDefaultAccess(event.objec_guid,access_list=["AddMember","SendMessages"]))
                             await client.send_message("🔥 گروه باز شد 🔥")
 
-                if event.raw_text.startswith("/mute")and event.type == "Group":
+                if event.raw_text.startswith("میوت")and event.type == "Group":
                     acsess = await client(methods.groups.GetGroupAdminMembers(group_guid= event.object_guid ,start_id=None))
                     for admins_group in acsess.in_chat_members:
                         if event.message.author_object_guid in admins_group.member_guid:
-                            command = event.raw_text.replace("/mute","").strip()
+                            command = event.raw_text.replace("میوت","").strip()
                             ids = command.replace("@","").strip()
                             usernames = await client(methods.extras.GetObjectByUsername(username=ids))
                             mutecount = mute.count(usernames.user.user_guid)
@@ -294,12 +391,16 @@ async def main():
                             elif mutecount == 0:
                                 mute.append(usernames.user.user_guid)
                                 await client.send_message(event.object_guid,message=f'🔥 کاربر {usernames.user.first_name}\n• میوت شد •')
-
-                if event.raw_text.startswith("/unmute")and event.type == "Group":
+                if event.message.author_object_guid in mute:
+                    try:
+                        await event.delete_messages()
+                    except:
+                        pass
+                if event.raw_text.startswith("حذف میوت")and event.type == "Group":
                     acsess = await client(methods.groups.GetGroupAdminMembers(group_guid= event.object_guid ,start_id=None))
                     for admins_group in acsess.in_chat_members:
                         if event.message.author_object_guid in admins_group.member_guid:
-                            command = event.raw_text.replace("/umute","").strip()
+                            command = event.raw_text.replace("حذف میوت","").strip()
                             ids = command.replace("@","").strip()
                             usernames = await client(methods.extras.GetObjectByUsername(username=ids))
                             mute.remove(usernames.user.user_guid)
